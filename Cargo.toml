@@ -1,0 +1,5 @@
+[package]
+
+name = "rustiquery"
+version = "0.0.1"
+authors = ["Hannu Hartikainen <hannu.hartikainen@gmail.com>"]
