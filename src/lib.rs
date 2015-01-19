@@ -3,6 +3,14 @@ pub struct List<T> {
 }
 
 impl<T> List<T> where T: Clone {
+    pub fn select<F, U>(self, f: F) -> List<U> where F: Fn(&T) -> U {
+        let mut tmp = Vec::new();
+        for item in self.items.iter() {
+            tmp.push(f(item));
+        }
+        List { items: tmp }
+    }
+
     pub fn where_<F>(self, f: F) -> List<T> where F: Fn(&T) -> bool {
         let mut tmp = Vec::new();
         for item in self.items.iter() {
@@ -10,13 +18,20 @@ impl<T> List<T> where T: Clone {
                 tmp.push((*item).clone());
             }
         }
-        return List { items: tmp }
+        List { items: tmp }
     }
 }
 
 #[test]
-fn where_bool_true() {
+fn where_even_number() {
     let xs = List { items: vec![1,2,3] };
     let filtered = xs.where_(|x| *x % 2 == 0);
     assert_eq!(filtered.items.len(), 1);
+}
+
+#[test]
+fn select_half_negative() {
+    let xs = List { items: vec![1u8,2,3] };
+    let ys = xs.select(|x| (*x as f32) / -2.0);
+    assert_eq!(ys.items[0], -0.5);
 }
